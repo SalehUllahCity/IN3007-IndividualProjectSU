@@ -7,12 +7,12 @@ import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCbDt31AsohSi3SXGNvXc-WJYkHffg2cS4",
-  authDomain: "compasstaskmanager.firebaseapp.com",
-  projectId: "compasstaskmanager",
-  storageBucket: "compasstaskmanager.firebasestorage.app",
-  messagingSenderId: "1040598440132",
-  appId: "1:1040598440132:web:9c21bfb1d88ce4793dd191"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCbDt31AsohSi3SXGNvXc-WJYkHffg2cS4",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "compasstaskmanager.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECTID || "compasstaskmanager",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGEBUCKET || "compasstaskmanager.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_SENDERID || "1040598440132",
+  appId: import.meta.env.VITE_FIREBASE_APPID || "1:1040598440132:web:9c21bfb1d88ce4793dd191"
 };
 
 // Initialize Firebase
