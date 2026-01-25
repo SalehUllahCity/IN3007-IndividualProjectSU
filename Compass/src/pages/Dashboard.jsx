@@ -1,15 +1,64 @@
 // Idea is to have a dashboard that shows an overview of tasks, projects, and upcoming deadlines.
 // Most settings and navigation will be accessible from here via a sidebar or top navigation bar that moves in as needed.
 
-import React from 'react';
-import { Calendar, BarChart, ListCheck } from 'lucide-react';       
+import { useAuth } from '../contexts/AuthContext';
+
 
 export default function Dashboard() {
+    const { currentUser, logout } = useAuth(); 
+      
+      
+    async function handleLogout() {
+      {/* logout functionality here */}
+  }
 
     return (
-        <div className = "p-8 bg-background min-h-screen">
-
+        <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="bg-background-surface border-b border-primary-soft">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-primary">Compass</h1>
+          <div className="flex items-center gap-4">
+            {/* User profile to be done */}
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2  text-black rounded-lg hover:opacity-90 transition"
+            >
+              Logout
+            </button>
+          </div>
         </div>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-6 py-8">
+        {/* Date header */}
+         <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold text-primary mb-2">Today</h2>
+          <p className="text-secondary">January 25, 2026</p>
+        </div>
+
+        {/* Task Button */}
+        <div className="flex justify-center mb-8">
+          <button className="bg-primary hover:bg-primary-hover text-primary px-6 py-3 rounded-lg font-medium transition">
+            + Add Task
+          </button>
+        </div>
+
+        {/* Tasks list */}
+        <div className="bg-background-surface rounded-lg p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-primary mb-4">My Tasks</h3>
+          
+          {/*to add tasks*/}
+          <div className="text-center py-12 text-muted">
+            <p>No tasks. Well done!</p>
+          </div>
+        </div>
+
+
+        </main>  
+
+      </div>
+
     );
 }
     

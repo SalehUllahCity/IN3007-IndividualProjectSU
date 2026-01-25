@@ -9,14 +9,17 @@ import './App.css'
 function App() {
 
   return (
-      <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
-        <Dashboard />
+      <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 
-      </div>
-       
-    
-    
-  )
 }
 
 export default App
