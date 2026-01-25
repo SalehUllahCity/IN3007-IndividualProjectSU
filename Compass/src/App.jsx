@@ -16,8 +16,11 @@ function App() {
         <p className="text-gray-600">
           Your intention-based task management system.
         </p>
+       
     </>
+    
   )
 }
 
 export default App
+
