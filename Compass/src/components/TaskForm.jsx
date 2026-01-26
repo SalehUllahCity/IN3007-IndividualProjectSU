@@ -9,11 +9,12 @@ export default function TaskForm({isOpen, onClose}) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log('Task created: ', { title, priority, estimatedDuration });
+        console.log('Task created: ', { title, description,priority, estimatedDuration });
         onClose(); // close the form
 
             // Reset form fields
         setTitle('');
+        setDescription('');
         setPriority('Medium');
         setEstimatedDuration(30);
     }
@@ -22,13 +23,20 @@ export default function TaskForm({isOpen, onClose}) {
     if (!isOpen) return null;
     
     return (
-        <div className ="inset-0 bg-slate bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-background-surface rounded-xl w-full max-w-md mx-4">
+      <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center p-4"
+            style={{zIndex:50}}> {/* Ensure this is high enough to ensure that no other elements are above it */}
+            onClick={onClose} 
+        <div
+        className="bg-white rounded-xl w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()} 
+        > {/* Prevent closing when clicking inside the modal, also seems like I can't have comments inside the containers */}
+        <div className ="flex items-center justify-between p-6 border-b border-gray-200">
+            
                       <h2 className="text-xl font-bold text-primary">Add New Task</h2>
                       <button onClick={onClose} className="text-muted hover:text-primary transition">X
         
                       </button>
-            </div>
+        </div>
             {/* To fix the description field since it is not formatted properly, probably due to padding}
             <div>
                 
@@ -49,6 +57,19 @@ export default function TaskForm({isOpen, onClose}) {
               placeholder="What needs to be done?"
             />
           </div>
+          {/* Description */}
+          <div> 
+            <label className="block text-sm font-medium text-primary mb-2">
+              Description
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-primary-soft focus:border-primary focus:outline-none bg-background"
+              placeholder="Additional details..."
+              rows={3}
+            />
+          </div>
             <div>
             <label className="block text-sm font-medium text-primary mb-2">
               Priority
@@ -61,7 +82,7 @@ export default function TaskForm({isOpen, onClose}) {
                   onClick={() => setPriority(p)}
                   className={`
                     px-3 py-2 rounded-lg font-medium transition capitalize
-                    ${priority === p ? 'bg-primary text-green-600': 'bg-background text-secondary hover:bg-primary-soft'
+                    ${priority === p ? 'bg-green-300 text-black': 'bg-green-100 text-secondary hover:bg-primary-soft'
                     }`}
                 >{p}
                 </button> ))}
@@ -80,23 +101,25 @@ export default function TaskForm({isOpen, onClose}) {
               step="15"
               value={estimatedDuration}
               onChange={(e) => setEstimatedDuration(parseInt(e.target.value))}
-              className="w-full accent-green-600"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600"
             />
             <div className="flex justify-between text-xs text-muted mt-1">
-              <span>15min</span>
-              <span>4hrs</span>
+              <span>15 minutes</span>
+              <span>4 hours</span>
             </div>
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-primary hover:bg-primary-hover text-black py-3 rounded-lg font-medium transition">
+            className="w-full bg-green-300 hover:bg-primary-hover text-black py-3 rounded-lg font-medium transition">
             Create Task
           </button>
           
             </form>
                 
+      
+        </div>
         </div>
 
     );

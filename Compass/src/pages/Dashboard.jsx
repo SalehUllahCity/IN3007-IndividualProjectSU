@@ -1,7 +1,7 @@
 // Idea is to have a dashboard that shows an overview of tasks, projects, and upcoming deadlines.
 // Most settings and navigation will be accessible from here via a sidebar or top navigation bar that moves in as needed.
 import { useState } from 'react';
-import TaskForm from '../pages/TaskForm';
+import TaskForm from '../components/TaskForm';
 import { useAuth } from '../contexts/AuthContext';
 
 
