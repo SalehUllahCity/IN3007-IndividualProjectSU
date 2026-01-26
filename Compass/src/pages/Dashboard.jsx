@@ -19,6 +19,15 @@ export default function Dashboard() {
       {/* Header */}
       <header className="bg-background-surface border-b border-primary-soft">
         <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+          {/*
+           <div>
+              <img
+                src="/logo.png"
+                alt="Compass"
+                className="w-6 h-6"
+              />
+            </div>
+            */}
           <h1 className="text-2xl font-bold text-primary">Compass</h1>
           <div className="flex items-center gap-4">
             {/* User profile to be done */}
