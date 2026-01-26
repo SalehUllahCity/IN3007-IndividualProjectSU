@@ -1,11 +1,13 @@
 // Idea is to have a dashboard that shows an overview of tasks, projects, and upcoming deadlines.
 // Most settings and navigation will be accessible from here via a sidebar or top navigation bar that moves in as needed.
-
+import { useState } from 'react';
+import TaskForm from '../pages/TaskForm';
 import { useAuth } from '../contexts/AuthContext';
 
 
 export default function Dashboard() {
-    const { currentUser, logout } = useAuth(); 
+    const { currentUser, logout } = useAuth();
+    const [isFormOpen, setIsFormOpen] = useState(false); 
       
       
     async function handleLogout() {
@@ -39,7 +41,7 @@ export default function Dashboard() {
 
         {/* Task Button */}
         <div className="flex justify-center mb-8">
-          <button className="bg-primary hover:bg-primary-hover text-primary px-6 py-3 rounded-lg font-medium transition">
+          <button onClick={() => setIsFormOpen(true)} className="bg-primary hover:bg-primary-hover text-primary px-6 py-3 rounded-lg font-medium transition">
             + Add Task
           </button>
         </div>
@@ -56,6 +58,9 @@ export default function Dashboard() {
 
 
         </main>  
+
+        {/* Task Form - a modal where the main screen should be visible when opened */}
+        <TaskForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
 
       </div>
 
