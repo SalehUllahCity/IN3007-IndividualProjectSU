@@ -11,7 +11,12 @@ export default function Dashboard() {
       
       
     async function handleLogout() {
-      {/* logout functionality here */}
+      try {
+        await logout();
+        navigate("/login");
+      } catch (error) {
+        console.error("Failed to log out:", error);
+      }
   }
 
     return (
@@ -33,7 +38,7 @@ export default function Dashboard() {
             {/* User profile to be done */}
             <button
               onClick={handleLogout}
-              className="px-4 py-2  text-black rounded-lg hover:opacity-90 transition"
+              className="px-4 py-2  text-black rounded-lg hover:opacity-90 transition hover:underline cursor-pointer hover:text-green-400"
             >
               Logout
             </button>
@@ -49,7 +54,7 @@ export default function Dashboard() {
         </div>
 
         {/* Task Button */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-8 hover:scale-105 transition-transform duration-100 hover:bg-primary-hover rounded-lg hover:text-green-400 cursor-pointer">
           <button onClick={() => setIsFormOpen(true)} className="bg-primary hover:bg-primary-hover text-primary px-6 py-3 rounded-lg font-medium transition">
             + Add Task
           </button>

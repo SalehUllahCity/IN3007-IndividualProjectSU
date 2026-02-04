@@ -33,7 +33,7 @@ export default function TaskForm({isOpen, onClose}) {
         <div className ="flex items-center justify-between p-6 border-b border-gray-200">
             
                       <h2 className="text-xl font-bold text-primary">Add New Task</h2>
-                      <button onClick={onClose} className="text-muted hover:text-primary transition">X
+                      <button onClick={onClose} className="text-muted hover:text-primary transition cursor-pointer">X
         
                       </button>
         </div>
@@ -81,7 +81,7 @@ export default function TaskForm({isOpen, onClose}) {
                   type="button"
                   onClick={() => setPriority(p)}
                   className={`
-                    px-3 py-2 rounded-lg font-medium transition capitalize
+                    px-3 py-2 rounded-lg font-medium transition capitalize cursor-pointer
                     ${priority === p ? 'bg-green-300 text-black': 'bg-green-100 text-secondary hover:bg-primary-soft'
                     }`}
                 >{p}
@@ -112,7 +112,7 @@ export default function TaskForm({isOpen, onClose}) {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-green-300 hover:bg-primary-hover text-black py-3 rounded-lg font-medium transition">
+            className="w-full bg-green-300 hover:bg-primary-hover text-black py-3 rounded-lg font-medium transition cursor-pointer">
             Create Task
           </button>
           
