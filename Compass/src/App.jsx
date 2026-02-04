@@ -5,6 +5,15 @@ import Dashboard from './pages/Dashboard';
 
 import './App.css'
 
+function ProtectedRoute({ children }) {
+  const { currentUser } = useAuth();
+  
+  if (!currentUser) {
+    return <Navigate to="/login" />;
+  }
+  
+  return children;
+}
 
 function App() {
 
@@ -13,7 +22,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
       </AuthProvider>
