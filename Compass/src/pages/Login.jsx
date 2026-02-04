@@ -7,7 +7,11 @@ import { auth } from "../config/firebase";
 
 // https://www.youtube.com/watch?v=1rPs0tepOFU
 // https://www.youtube.com/watch?v=7jOq6SXBF-k -- google auth
+// MAKE SURE TO REFERENCE THE ABOVE
 
+
+// TO DO: https://www.youtube.com/watch?v=GE27BkUZbXk - allow store of non-gmail users
+// TO DO: error handling and error notifications
 
 
 
