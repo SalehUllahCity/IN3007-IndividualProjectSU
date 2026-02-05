@@ -38,7 +38,7 @@ export default function Login() {
     <section className="min-h-screen flex items-center font-inter justify-center bg-gradient-to-r from-green-100 from-10% via-blue-100 via-30% to-blue-100 to-90%">
       <div className="flex shadow-2xl">
         <div className="flex flex-col items-center justify-center text-center p-20 gap-8 bg-white rounded-2xl">
-          <h1 className="text-5xl font-bold">Welcome to Compass</h1>
+          <h1 className="text-4xl font-bold">Welcome to Compass</h1>
           <div className="flex flex-col text-2xl text-left gap-1">
             <span className="font-inter">Username</span>
             <input type="text"placeholder="you@example.com" className="rounded-md p-1 border-2 outline-none focus:border-cyan-400 focus:bg-slate-50"></input>

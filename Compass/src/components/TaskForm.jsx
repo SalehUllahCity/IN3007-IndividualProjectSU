@@ -1,15 +1,41 @@
 import { useState } from 'react';
+import { createTask } from '../services/taskServices';
+import {addDoc, collection} from 'firebase/firestore';
+import { useAuth } from '../contexts/AuthContext';
 
-export default function TaskForm({isOpen, onClose}) {
+export default function TaskForm({isOpen, onClose, onTaskCreated}) {
+    const { currentUser } = useAuth();
     const [title, setTitle] = useState('');
     const [priority, setPriority] = useState('Medium');
     const [estimatedDuration, setEstimatedDuration] = useState(30);
     const [description, setDescription] = useState('');
+   
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // prevent page refresh on form submission
+        try {
+            await createTask(currentUser.uid, { title, description, priority, estimatedDuration });
 
+            console.log('Task created: ', { title, description,priority, estimatedDuration });
+            
+            if (onTaskCreated) {
+                onTaskCreated(); // Notify parent to refresh task list
+            }
+             onClose(); // close the form
+
+            // Reset form fields
+            setTitle('');
+            setDescription('');
+            setPriority('Medium');
+            setEstimatedDuration(30);
+
+        }catch (error) {
+            console.error("Error creating task: ", error);
+        }
+
+      
         console.log('Task created: ', { title, description,priority, estimatedDuration });
+        /*
         onClose(); // close the form
 
             // Reset form fields
@@ -17,6 +43,7 @@ export default function TaskForm({isOpen, onClose}) {
         setDescription('');
         setPriority('Medium');
         setEstimatedDuration(30);
+        */
     }
 
     // do not open the form if isOpen is false
@@ -24,7 +51,7 @@ export default function TaskForm({isOpen, onClose}) {
     
     return (
       <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center p-4"
-            style={{zIndex:50}}> {/* Ensure this is high enough to ensure that no other elements are above it */}
+            style={{zIndex:50}}> 
             onClick={onClose} 
         <div
         className="bg-white rounded-xl w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto"
