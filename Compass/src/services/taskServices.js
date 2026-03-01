@@ -27,6 +27,17 @@ export async function createTask(userId, task) {
 }
 
 export async function getTasks(userId) {
+    try {
+        const q = query(collection(db, tasksCollection), where("userId", "==", userId), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        const tasks = [];
+        querySnapshot.forEach((doc) => {
+            tasks.push({ id: doc.id, ...doc.data() });
+        });
+        return tasks;
+    }catch (error) {
+        console.error("Error fetching tasks: ", error);
+    }
 }
 
 export async function updateTask(taskId, updatedTask) {

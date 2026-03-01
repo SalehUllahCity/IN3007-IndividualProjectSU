@@ -1,15 +1,42 @@
 // Idea is to have a dashboard that shows an overview of tasks, projects, and upcoming deadlines.
 // Most settings and navigation will be accessible from here via a sidebar or top navigation bar that moves in as needed.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TaskForm from '../components/TaskForm';
+import TaskList from '../components/TaskList';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
+import { getTasks } from '../services/taskServices';
 
 
 
 export default function Dashboard() {
     const { currentUser, logout } = useAuth();
     const [isFormOpen, setIsFormOpen] = useState(false); 
+
+    const [tasks, setTasks] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch tasks when the component mounts
+
+    useEffect(() => {
+      if (currentUser) {
+        loadTasks();
+      }
+    }, [currentUser]);
+
+    async function loadTasks() {
+      if (!currentUser) return;
+      setLoading(true);
+      try {
+        const fetchedTasks = await getTasks(currentUser.uid);
+        setTasks(fetchedTasks);
+
+
+      } catch (error) {
+        console.error("Error loading tasks: ", error);
+      }
+      setLoading(false);
+    }
       
       
     async function handleLogout() {
@@ -20,6 +47,7 @@ export default function Dashboard() {
         console.error("Failed to log out:", error);
       }
   }
+
 
     return (
         <div className="min-h-screen bg-background">
@@ -64,12 +92,14 @@ export default function Dashboard() {
 
         {/* Tasks list */}
         <div className="bg-background-surface rounded-lg p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-primary mb-4">My Tasks</h3>
-          
-          {/*to add tasks*/}
-          <div className="text-center py-12 text-muted">
-            <p>No tasks. Well done!</p>
+           <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-primary">My Tasks</h3>
+            <span className="text-sm text-gray-500">{tasks.length} tasks</span>
           </div>
+          
+          {loading ? (
+            <div className="text-center py-12 text-gray-400">
+              Loading tasks... </div>) : ( <TaskList tasks={tasks} /> )}
         </div>
 
 
