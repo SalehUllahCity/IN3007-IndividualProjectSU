@@ -15,6 +15,8 @@ export default function Dashboard() {
 
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
+    
+    const [editTask, setEditTask] = useState(null); // State to hold the task being edited
 
     // Fetch tasks when the component mounts
 
@@ -36,6 +38,16 @@ export default function Dashboard() {
         console.error("Error loading tasks: ", error);
       }
       setLoading(false);
+    }
+
+    function handleEdit(task) {
+      setEditTask(task);
+      setIsFormOpen(true);
+    }
+
+    function handleCloseForm() {
+      setEditTask(null);
+      setIsFormOpen(false);
     }
       
       
@@ -85,7 +97,10 @@ export default function Dashboard() {
 
         {/* Task Button */}
         <div className="flex justify-center mb-8 hover:scale-105 transition-transform duration-100 hover:bg-primary-hover rounded-lg hover:text-green-400 cursor-pointer">
-          <button onClick={() => setIsFormOpen(true)} className="bg-primary hover:bg-primary-hover text-primary px-6 py-3 rounded-lg font-medium transition">
+          <button onClick={() => {
+            setEditTask(null);
+            setIsFormOpen(true);
+          }} className="bg-primary hover:bg-primary-hover text-primary px-6 py-3 rounded-lg font-medium transition">
             + Add Task
           </button>
         </div>
@@ -99,14 +114,14 @@ export default function Dashboard() {
           
           {loading ? (
             <div className="text-center py-12 text-gray-400">
-              Loading tasks... </div>) : ( <TaskList tasks={tasks} /> )}
+              Loading tasks... </div>) : ( <TaskList tasks={tasks} onEdit={handleEdit} onDelete={loadTasks} /> )}
         </div>
 
 
         </main>  
 
         {/* Task Form - a modal where the main screen should be visible when opened */}
-        <TaskForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
+        <TaskForm isOpen={isFormOpen} onClose={handleCloseForm} onTaskCreated={loadTasks} editTask={editTask} />
 
       </div>
 

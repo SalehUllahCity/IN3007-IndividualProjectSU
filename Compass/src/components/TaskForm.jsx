@@ -1,22 +1,48 @@
-import { useState } from 'react';
-import { createTask } from '../services/taskServices';
+import { useEffect, useState } from 'react';
+import { createTask, updateTask } from '../services/taskServices';
 import {addDoc, collection} from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function TaskForm({isOpen, onClose, onTaskCreated}) {
+export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
     const { currentUser } = useAuth();
     const [title, setTitle] = useState('');
     const [priority, setPriority] = useState('Medium');
     const [estimatedDuration, setEstimatedDuration] = useState(30);
     const [description, setDescription] = useState('');
-   
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState('To Do');
+
+
+    useEffect(() => {
+        if (editTask) {
+            setTitle(editTask.title || '');
+            setDescription(editTask.description || '');
+            setPriority(editTask.priority || 'Medium');
+            setEstimatedDuration(editTask.estimatedDuration || 30);
+            setStatus(editTask.status || 'To Do');
+        } else {
+            // Reset form when not editing
+            setTitle('');
+            setDescription('');
+            setPriority('Medium');
+            setEstimatedDuration(30);
+            setStatus('To Do');
+        }
+    }, [editTask, isOpen]);
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // prevent page refresh on form submission
+
         try {
+            if (editTask) {
+                await updateTask(editTask.id, { title: title, description: description, priority: priority, estimatedDuration: estimatedDuration, status: editTask.status, createdAt: editTask.createdAt });
+                console.log('Task updated: ', { title, description,priority, estimatedDuration });
+            } else {
             await createTask(currentUser.uid, { title, description, priority, estimatedDuration });
+            
 
             console.log('Task created: ', { title, description,priority, estimatedDuration });
+            }
             
             if (onTaskCreated) {
                 onTaskCreated(); // Notify parent to refresh task list
@@ -29,8 +55,9 @@ export default function TaskForm({isOpen, onClose, onTaskCreated}) {
             setPriority('Medium');
             setEstimatedDuration(30);
 
-        }catch (error) {
+        } catch (error) {
             console.error("Error creating task: ", error);
+            alert("Failed to create task. Please try again.");
         }
 
       
@@ -52,7 +79,6 @@ export default function TaskForm({isOpen, onClose, onTaskCreated}) {
     return (
       <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center p-4"
             style={{zIndex:50}}> 
-            onClick={onClose} 
         <div
         className="bg-white rounded-xl w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()} 
@@ -115,6 +141,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated}) {
                 </button> ))}
             </div>
           </div>
+          
 
           {/* Estimated Duration */}
           <div>
@@ -140,7 +167,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated}) {
           <button
             type="submit"
             className="w-full bg-green-300 hover:bg-primary-hover text-black py-3 rounded-lg font-medium transition cursor-pointer">
-            Create Task
+            {loading ? 'Saving...' : (editTask ? 'Update Task' : 'Create Task')}
           </button>
           
             </form>

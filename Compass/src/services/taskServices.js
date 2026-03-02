@@ -41,9 +41,29 @@ export async function getTasks(userId) {
 }
 
 export async function updateTask(taskId, updatedTask) {
+    try {
+        const taskRef = doc(db, tasksCollection, taskId);
+        await updateDoc(taskRef, {
+            title: updatedTask.title,
+            description: updatedTask.description,
+            priority: updatedTask.priority,
+            estimatedDuration: updatedTask.estimatedDuration,
+            status: updatedTask.status,
+            createdAt: updatedTask.createdAt || Timestamp.now(),
+        });
+        console.log("Task updated with ID: ", taskId);
+    }catch (error) {
+        console.error("Error updating task: ", error);
+    }
 }
 
 export async function deleteTask(taskId) {
+    try {
+        await deleteDoc(doc(db, tasksCollection, taskId));
+        console.log("Task deleted with ID: ", taskId);
+    }catch (error) {
+        console.error("Error deleting task: ", error);
+    }
 }
 
 export async function toggleTaskCompletion(taskId, currentStatus) {
