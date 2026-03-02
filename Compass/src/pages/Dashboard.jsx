@@ -8,6 +8,27 @@ import { Navigate } from 'react-router-dom';
 import { getTasks } from '../services/taskServices';
 
 
+function getDate(date) {
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const month = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+  
+
+
+const suffix = (day) => {
+  if (day > 3 && day < 21) return 'th';
+  switch (day % 10) {
+    case 1: return 'st';
+    case 2: return 'nd';
+    case 3: return 'rd';
+    default: return 'th';
+  }
+  
+};
+return `${month} ${day}${suffix(day)}, ${year}`;
+
+}
 
 export default function Dashboard() {
     const { currentUser, logout } = useAuth();
@@ -92,7 +113,7 @@ export default function Dashboard() {
         {/* Date header */}
          <div className="text-center mb-8">
           <h2 className="text-4xl font-bold text-primary mb-2">Today</h2>
-          <p className="text-secondary">January 25, 2026</p>
+          <p className="text-secondary">{getDate(new Date())}</p>
         </div>
 
         {/* Task Button */}

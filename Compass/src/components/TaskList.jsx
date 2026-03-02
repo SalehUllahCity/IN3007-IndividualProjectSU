@@ -21,6 +21,9 @@ export default function TaskList({ tasks, onEdit, onDelete }) {
     }
   }
 
+  
+
+
   if (tasks.length === 0) {
     return (
       <div className="text-center py-12 text-gray-400">
@@ -36,10 +39,24 @@ export default function TaskList({ tasks, onEdit, onDelete }) {
       {tasks.map((task) => (
         <div key={task.id} className="bg-white rounded-lg shadow p-4">
           <div className="flex justify-between items-start">
-            <div>
+            <div className="flex-1">
                 <h4 className="text-lg font-semibold text-primary">{task.title}</h4>
                 <p className="text-sm text-secondary mt-1">{task.description}</p>
+
+                <div className="flex items-center gap-4 mt-2">
+                  {task.deadline && (
+                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                      {task.deadline.toDate ? task.deadline.toDate().toLocaleDateString() : new Date(task.deadline).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
+
+
+
+                
             </div>
+             
+            
             <div className="flex flex-col items-end gap-2">
               <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${
                 task.priority === 'low' ? 'bg-green-100 text-green-800' :

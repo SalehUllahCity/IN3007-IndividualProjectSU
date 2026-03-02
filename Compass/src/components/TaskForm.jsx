@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { createTask, updateTask } from '../services/taskServices';
-import {addDoc, collection} from 'firebase/firestore';
+import {addDoc, collection, Timestamp} from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
+
 
 export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
     const { currentUser } = useAuth();
@@ -11,6 +12,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState('To Do');
+    const [deadline, setDeadline] = useState(null);
 
 
     useEffect(() => {
@@ -19,14 +21,27 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             setDescription(editTask.description || '');
             setPriority(editTask.priority || 'Medium');
             setEstimatedDuration(editTask.estimatedDuration || 30);
+            setDeadline(editTask.deadline || null);
             setStatus(editTask.status || 'To Do');
+          
+            if (editTask.deadline) {
+              const deadlineDate = editTask.deadline.toDate();
+              const formattedDeadline = deadlineDate.toISOString().split('T')[0];
+              setDeadline(formattedDeadline);
+            } else {
+              setDeadline(null);
+            }
+
+
         } else {
             // Reset form when not editing
             setTitle('');
             setDescription('');
             setPriority('Medium');
             setEstimatedDuration(30);
+            setDeadline(null);
             setStatus('To Do');
+            setDeadline(null);
         }
     }, [editTask, isOpen]);
 
@@ -35,13 +50,13 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
 
         try {
             if (editTask) {
-                await updateTask(editTask.id, { title: title, description: description, priority: priority, estimatedDuration: estimatedDuration, status: editTask.status, createdAt: editTask.createdAt });
-                console.log('Task updated: ', { title, description,priority, estimatedDuration });
+                await updateTask(editTask.id, { title: title, description: description, priority: priority, estimatedDuration: estimatedDuration, deadline: deadline, status: status, createdAt: editTask.createdAt });
+                console.log('Task updated: ', { title, description,priority, estimatedDuration, deadline });
             } else {
-            await createTask(currentUser.uid, { title, description, priority, estimatedDuration });
+            await createTask(currentUser.uid, { title, description, priority, estimatedDuration, deadline });
             
 
-            console.log('Task created: ', { title, description,priority, estimatedDuration });
+            console.log('Task created: ', { title, description,priority, estimatedDuration, deadline });
             }
             
             if (onTaskCreated) {
@@ -54,6 +69,8 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             setDescription('');
             setPriority('Medium');
             setEstimatedDuration(30);
+            setDeadline(null);
+            
 
         } catch (error) {
             console.error("Error creating task: ", error);
@@ -61,7 +78,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
         }
 
       
-        console.log('Task created: ', { title, description,priority, estimatedDuration });
+        console.log('Task created: ', { title, description,priority, estimatedDuration, deadline, status });
         /*
         onClose(); // close the form
 
@@ -123,6 +140,23 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
               rows={3}
             />
           </div>
+
+
+          {/* Deadline */}
+          <div>
+            <label className="block text-sm font-medium text-primary mb-2">
+              Deadline
+            </label>
+            <input
+              type="date"
+              value={deadline || ''}
+              onChange={(e) => setDeadline(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-primary-soft focus:border-primary focus:outline-none bg-background"
+            />
+          </div>
+
+
+          {/* Priority */}
             <div>
             <label className="block text-sm font-medium text-primary mb-2">
               Priority
