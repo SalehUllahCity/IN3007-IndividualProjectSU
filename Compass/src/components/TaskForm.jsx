@@ -14,6 +14,11 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
     const [status, setStatus] = useState('To Do');
     const [deadline, setDeadline] = useState(null);
 
+    function getTodayDate() {
+        const today = new Date();
+        return today.toISOString().split('T')[0]; // Format as YYYY-MM-DD for input type="date"
+    }
+
 
     useEffect(() => {
         if (editTask) {
@@ -21,7 +26,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             setDescription(editTask.description || '');
             setPriority(editTask.priority || 'Medium');
             setEstimatedDuration(editTask.estimatedDuration || 30);
-            setDeadline(editTask.deadline || null);
+            setDeadline(editTask.deadline || getTodayDate());
             setStatus(editTask.status || 'To Do');
           
             if (editTask.deadline) {
@@ -29,7 +34,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
               const formattedDeadline = deadlineDate.toISOString().split('T')[0];
               setDeadline(formattedDeadline);
             } else {
-              setDeadline(null);
+              setDeadline(getTodayDate());
             }
 
 
@@ -39,9 +44,8 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             setDescription('');
             setPriority('Medium');
             setEstimatedDuration(30);
-            setDeadline(null);
+            setDeadline(getTodayDate());
             setStatus('To Do');
-            setDeadline(null);
         }
     }, [editTask, isOpen]);
 
@@ -69,7 +73,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             setDescription('');
             setPriority('Medium');
             setEstimatedDuration(30);
-            setDeadline(null);
+            setDeadline(getTodayDate());
             
 
         } catch (error) {
