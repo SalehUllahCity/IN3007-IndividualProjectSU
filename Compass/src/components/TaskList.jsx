@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { deleteTask } from "../services/taskServices";
+import { deleteTask, toggleTaskCompletion } from "../services/taskServices";
 
-export default function TaskList({ tasks, onEdit, onDelete }) {
+export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }) {
   const [deletingTaskId, setDeletingTaskId] = useState(null);
+  const [togglingTaskId, setTogglingTaskId] = useState(null);
 
   async function handleDelete(taskId) {
     if (window.confirm("Are you sure you want to delete this task?")) {
@@ -18,6 +19,22 @@ export default function TaskList({ tasks, onEdit, onDelete }) {
       } finally {
         setDeletingTaskId(null);
       }
+    }
+    
+  }
+
+  async function handleToggleCompletion(taskId, currentStatus) {
+    setTogglingTaskId(taskId);
+    try {
+      const newStatus = await toggleTaskCompletion(taskId, currentStatus);
+      if (onToggleCompletion) {
+        onToggleCompletion(taskId, newStatus); // Notify parent to update UI
+      }
+    } catch (error) {
+      console.error("Error toggling task completion: ", error);
+      alert("Failed to toggle task completion. Please try again.");
+    } finally {
+      setTogglingTaskId(null);
     }
   }
 
@@ -38,7 +55,21 @@ export default function TaskList({ tasks, onEdit, onDelete }) {
     <div className="space-y-4">
       {tasks.map((task) => (
         <div key={task.id} className="bg-white rounded-lg shadow p-4">
-          <div className="flex justify-between items-start">
+            {/* Add button for completion O - i've done it but the circle does not line up with the task list properly*/}
+
+          
+          <div className="flex gap-3 items-start">
+            <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              
+              handleToggleCompletion(task.id, task.status);
+            }}
+            className={`w-5 h-5 rounded-full border-2 flex-shrink-0 transition-colors hover:bg-green-200 ${
+              task.status === 'completed' ? 'bg-green-500 border-green-500' : 'border-green-400'
+            }`}
+            />
             <div className="flex-1">
                 <h4 className="text-lg font-semibold text-primary">{task.title}</h4>
                 <p className="text-sm text-secondary mt-1">{task.description}</p>
@@ -66,7 +97,7 @@ export default function TaskList({ tasks, onEdit, onDelete }) {
                 }`}>
                 {task.priority}
                 </span>
-                <span className="text-xs text-muted">{task.estimatedDuration} mins</span>
+                <span className="text-xs text-muted bg-gray-100 px-2 py-1 rounded">{task.estimatedDuration} mins</span>
             </div>
             </div>
             <button onClick={() => onEdit(task)} className="text-sm text-blue-500 hover:underline font-semibold">Edit</button>

@@ -56,6 +56,8 @@ export default function Dashboard() {
         const fetchedTasks = await getTasks(currentUser.uid);
 
         const filteredTasks = fetchedTasks.filter(task => {
+          if (task.status === 'completed') return false; 
+
           if (task.deadline) {
             const deadlineDate = task.deadline.toDate ? task.deadline.toDate() : new Date(task.deadline);
             return deadlineDate.getDate() === selectedDate.getDate() &&
@@ -185,7 +187,7 @@ export default function Dashboard() {
           
           {loading ? (
             <div className="text-center py-12 text-gray-400">
-              Loading tasks... </div>) : ( <TaskList tasks={tasks} onEdit={handleEdit} onDelete={loadTasks} /> )}
+              Loading tasks... </div>) : ( <TaskList tasks={tasks} onEdit={handleEdit} onDelete={loadTasks} onToggleCompletion={loadTasks} /> )}
         </div>
 
 

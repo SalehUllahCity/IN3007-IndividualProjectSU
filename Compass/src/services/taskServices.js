@@ -69,6 +69,20 @@ export async function deleteTask(taskId) {
 }
 
 export async function toggleTaskCompletion(taskId, currentStatus) {
+    try {
+        const newStatus = currentStatus === 'completed' ? 'To Do' : 'completed';
+
+        const taskRef = doc(db, tasksCollection, taskId);
+        await updateDoc(taskRef, { 
+            status: newStatus,
+            completedAt: newStatus === 'completed' ? Timestamp.now() : null
+        });
+        console.log(`Task ${taskId} marked as ${newStatus}`);
+        return newStatus; 
+    }
+    catch (error) {
+        console.error("Error toggling task completion: ", error);
+    }
 }
 
 // Check video saved on Notion to complete this later 'under login task'

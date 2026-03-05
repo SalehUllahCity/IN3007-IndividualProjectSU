@@ -30,7 +30,8 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             setStatus(editTask.status || 'To Do');
           
             if (editTask.deadline) {
-              const deadlineDate = editTask.deadline.toDate();
+              const deadlineDate = editTask.deadline?.toDate ? editTask.deadline.toDate() : editTask.deadline instanceof Date ? editTask.deadline                 // JS Date object
+                                                                                                                : new Date(editTask.deadline);
               const formattedDeadline = deadlineDate.toISOString().split('T')[0];
               setDeadline(formattedDeadline);
             } else {
