@@ -80,16 +80,7 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }
                       {task.deadline.toDate ? task.deadline.toDate().toLocaleDateString() : new Date(task.deadline).toLocaleDateString()}
                     </span>
                   )}
-                </div>
-
-
-
-                
-            </div>
-             
-            
-            <div className="flex flex-col items-end gap-2">
-              <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${
+                  <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${
                 task.priority === 'low' ? 'bg-green-100 text-green-800' :
                 task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
                 task.priority === 'high' ? 'bg-red-100 text-red-800' :  
@@ -98,11 +89,22 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }
                 {task.priority}
                 </span>
                 <span className="text-xs text-muted bg-gray-100 px-2 py-1 rounded">{task.estimatedDuration} mins</span>
+                </div>
+
+
+
+                
             </div>
-            </div>
+             
+            
+            <div className="flex gap-1 flex-shrink-0">
+              
+           
             <button onClick={() => onEdit(task)} className="text-sm text-blue-500 hover:underline font-semibold">Edit</button>
             <button onClick={() => handleDelete(task.id)} className="text-sm text-red-500 hover:underline px-2 py-1 font-semibold">Delete</button>
         </div>
+         </div>
+            </div>
       ))}
     </div>
   );
