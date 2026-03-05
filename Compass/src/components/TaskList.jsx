@@ -52,9 +52,9 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }
     
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {tasks.map((task) => (
-        <div key={task.id} className="bg-white rounded-lg shadow p-4">
+        <div key={task.id} className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer">
             {/* Add button for completion O - i've done it but the circle does not line up with the task list properly*/}
 
           
@@ -78,6 +78,7 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }
                   {task.deadline && (
                     <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                       {task.deadline.toDate ? task.deadline.toDate().toLocaleDateString() : new Date(task.deadline).toLocaleDateString()}
+                      {task.time ? ` ${task.time}` : ''}
                     </span>
                   )}
                   <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${

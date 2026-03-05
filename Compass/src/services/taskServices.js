@@ -15,6 +15,7 @@ export async function createTask(userId, task) {
             priority: task.priority,
             estimatedDuration: task.estimatedDuration,
             deadline: task.deadline || null,
+            time: task.time || '',
             status: 'To Do',
             createdAt: Timestamp.now(),
         };
@@ -50,6 +51,7 @@ export async function updateTask(taskId, updatedTask) {
             priority: updatedTask.priority,
             estimatedDuration: updatedTask.estimatedDuration,
             deadline: updatedTask.deadline || null,
+            time: updatedTask.time || '',
             status: updatedTask.status,
             createdAt: updatedTask.createdAt || Timestamp.now(),
         });

@@ -13,6 +13,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState('To Do');
     const [deadline, setDeadline] = useState(null);
+    const [time, setTime] = useState('');
 
     function getTodayDate() {
         const today = new Date();
@@ -28,6 +29,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             setEstimatedDuration(editTask.estimatedDuration || 30);
             setDeadline(editTask.deadline || getTodayDate());
             setStatus(editTask.status || 'To Do');
+            setTime(editTask.time || '');
           
             if (editTask.deadline) {
               const deadlineDate = editTask.deadline?.toDate ? editTask.deadline.toDate() : editTask.deadline instanceof Date ? editTask.deadline                 // JS Date object
@@ -47,6 +49,7 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             setEstimatedDuration(30);
             setDeadline(getTodayDate());
             setStatus('To Do');
+            setTime('');
         }
     }, [editTask, isOpen]);
 
@@ -55,13 +58,14 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
 
         try {
             if (editTask) {
-                await updateTask(editTask.id, { title: title, description: description, priority: priority, estimatedDuration: estimatedDuration, deadline: deadline, status: status, createdAt: editTask.createdAt });
+                await updateTask(editTask.id, { title: title, description: description, priority: priority,
+                   estimatedDuration: estimatedDuration, deadline: deadline, status: status, createdAt: editTask.createdAt, time: time });
                 console.log('Task updated: ', { title, description,priority, estimatedDuration, deadline });
             } else {
-            await createTask(currentUser.uid, { title, description, priority, estimatedDuration, deadline });
+            await createTask(currentUser.uid, { title, description, priority, estimatedDuration, deadline, time, status });
             
 
-            console.log('Task created: ', { title, description,priority, estimatedDuration, deadline });
+            console.log('Task created: ', { title, description,priority, estimatedDuration, deadline, time, status });
             }
             
             if (onTaskCreated) {
@@ -75,6 +79,8 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             setPriority('Medium');
             setEstimatedDuration(30);
             setDeadline(getTodayDate());
+            setStatus('To Do');
+            setTime('');
             
 
         } catch (error) {
@@ -160,6 +166,18 @@ export default function TaskForm({isOpen, onClose, onTaskCreated, editTask}) {
             />
           </div>
 
+          {/* Time */}
+          <div >
+            <label className="block text-sm font-medium text-primary mb-2">
+              Time
+            </label>
+            <input
+              type="time"
+              value={time || ''}
+              onChange={(e) => setTime(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-primary-soft focus:border-primary focus:outline-none bg-background"
+            />
+          </div>
 
           {/* Priority */}
             <div>

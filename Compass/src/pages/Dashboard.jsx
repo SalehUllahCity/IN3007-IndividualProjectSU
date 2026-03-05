@@ -67,7 +67,17 @@ export default function Dashboard() {
           });
 
         filteredTasks.sort((a, b) => {
-            return a.createdAt.toMillis() - b.createdAt.toMillis();  // Ascending order
+            const hasTimeA = !!a.time;
+            const hasTimeB = !!b.time;
+
+             if (hasTimeA && !hasTimeB) return -1;
+             if (!hasTimeA && hasTimeB) return 1;
+
+          // Both have time — sort earliest first
+          if (hasTimeA && hasTimeB) return a.time.localeCompare(b.time);
+
+          // Both have no time — sort by createdAt ascending (oldest first)
+          return a.createdAt.toMillis() - b.createdAt.toMillis();
         });
 
         setTasks(filteredTasks);
