@@ -1,6 +1,23 @@
 import { useState } from "react";
 import { deleteTask, toggleTaskCompletion } from "../services/taskServices";
 
+const groups = [
+  { key: "anytime", label: "Any Time", emoji: "🕐", bg: "bg-gray-50", range: null },
+  { key: "morning", label: "Morning",  emoji: "🌅", bg: "bg-yellow-50", range: [0, 12] },
+  { key: "afternoon", label: "Afternoon", emoji: "☀️", bg: "bg-orange-50", range: [12, 17] },
+  { key: "evening", label: "Evening",  emoji: "🌙", bg: "bg-indigo-50", range: [17, 24] },
+];
+
+function getGroup(task) {
+  if (!task.time) return "anytime";
+  const hour = parseInt(task.time.split(":")[0], 10);
+  if (hour < 12) return "morning";
+  if (hour < 17) return "afternoon";
+  return "evening";
+ 
+}
+
+
 export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }) {
   const [deletingTaskId, setDeletingTaskId] = useState(null);
   const [togglingTaskId, setTogglingTaskId] = useState(null);
@@ -49,15 +66,31 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }
     );
   }
 
+  const groupedTasks = tasks.reduce((groupsObj, task) => {
+    const groupKey = getGroup(task);
+    if (!groupsObj[groupKey]) {
+      groupsObj[groupKey] = [];
+    }
+    groupsObj[groupKey].push(task);
+    return groupsObj;
+  }, {});
+
     
 
   return (
     <div className="space-y-3">
-      {tasks.map((task) => (
-        <div key={task.id} className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer">
-            {/* Add button for completion O - i've done it but the circle does not line up with the task list properly*/}
+      {groups.map(({ key, label, emoji, bg }) => {
+        const groupTasks = groupedTasks[key] || [];
+        return (
+          <div key={key} className={`p-4 rounded-lg ${bg}`}>
+            <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+              {emoji} {label}
+            </h3>
+            <div className="mt-2 space-y-2">
+              {groupTasks.map((task) => (
+                <div key={task.id} className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                  {/* Add button for completion O - i've done it but the circle does not line up with the task list properly*/}
 
-          
           <div className="flex gap-3 items-start">
             <button
             type="button"
@@ -103,10 +136,14 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }
            
             <button onClick={() => onEdit(task)} className="text-sm text-blue-500 hover:underline font-semibold">Edit</button>
             <button onClick={() => handleDelete(task.id)} className="text-sm text-red-500 hover:underline px-2 py-1 font-semibold">Delete</button>
-        </div>
-         </div>
             </div>
-      ))}
+            </div>
+            </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
