@@ -6,7 +6,7 @@ import TaskList from '../components/TaskList';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 import { getTasks } from '../services/taskServices';
-
+import CompletionBar from '../components/CompletionBar';
 
 function getDate(date) {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -41,6 +41,12 @@ export default function Dashboard() {
 
     const [selectedDate, setSelectedDate] = useState(new Date()); // State for selected date, default to today
 
+    const [completedToday, setCompletedToday] = useState(0); // State to track number of tasks completed today
+    const [totalToday, setTotalToday] = useState(0); 
+  
+
+
+
     // Fetch tasks when the component mounts
 
     useEffect(() => {
@@ -56,7 +62,7 @@ export default function Dashboard() {
         const fetchedTasks = await getTasks(currentUser.uid);
 
         const filteredTasks = fetchedTasks.filter(task => {
-          if (task.status === 'completed') return false; 
+          if (!task.deadline) return false;
 
           if (task.deadline) {
             const deadlineDate = task.deadline.toDate ? task.deadline.toDate() : new Date(task.deadline);
@@ -65,6 +71,15 @@ export default function Dashboard() {
              deadlineDate.getFullYear() === selectedDate.getFullYear();
           }
           });
+
+          const completedCount = filteredTasks.filter(task => task.status === 'completed').length;
+          console.log("completedCount:", completedCount);
+
+          setCompletedToday(completedCount);
+          
+          setTotalToday(filteredTasks.length);
+
+          const activeTasks = filteredTasks.filter(task => task.status !== 'completed');
 
         filteredTasks.sort((a, b) => {
             const hasTimeA = !!a.time;
@@ -80,7 +95,7 @@ export default function Dashboard() {
           return a.createdAt.toMillis() - b.createdAt.toMillis();
         });
 
-        setTasks(filteredTasks);
+        setTasks(activeTasks);
 
 
         
@@ -126,6 +141,14 @@ export default function Dashboard() {
         console.error("Failed to log out:", error);
       }
   }
+
+  async function onToggleCompletion() {
+    await loadTasks(); 
+  }
+
+    if (!currentUser) {
+        return <Navigate to="/login" />;
+    }
 
 
     return (
@@ -192,12 +215,15 @@ export default function Dashboard() {
         <div className="bg-background-surface rounded-lg p-6 shadow-sm">
            <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-primary">My Tasks</h3>
+            <div className="w-1/3">
+              <CompletionBar completed={completedToday} total={5} />
+            </div>
             <span className="text-sm text-gray-500">{tasks.length} tasks</span>
           </div>
           
           {loading ? (
             <div className="text-center py-12 text-gray-400">
-              Loading tasks... </div>) : ( <TaskList tasks={tasks} onEdit={handleEdit} onDelete={loadTasks} onToggleCompletion={loadTasks} /> )}
+              Loading tasks... </div>) : ( <TaskList tasks={tasks} onEdit={handleEdit} onDelete={loadTasks} onToggleCompletion={onToggleCompletion} /> )}
         </div>
 
 

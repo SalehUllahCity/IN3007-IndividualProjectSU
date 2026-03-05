@@ -8,6 +8,8 @@ const groups = [
   { key: "evening", label: "Evening",  emoji: "🌙", bg: "bg-indigo-50", range: [17, 24] },
 ];
 
+
+
 function getGroup(task) {
   if (!task.time) return "anytime";
   const hour = parseInt(task.time.split(":")[0], 10);
@@ -21,6 +23,7 @@ function getGroup(task) {
 export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }) {
   const [deletingTaskId, setDeletingTaskId] = useState(null);
   const [togglingTaskId, setTogglingTaskId] = useState(null);
+  
 
   async function handleDelete(taskId) {
     if (window.confirm("Are you sure you want to delete this task?")) {
@@ -46,7 +49,7 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggleCompletion }
       const newStatus = await toggleTaskCompletion(taskId, currentStatus);
       if (onToggleCompletion) {
         onToggleCompletion(taskId, newStatus); // Notify parent to update UI
-      }
+      } 
     } catch (error) {
       console.error("Error toggling task completion: ", error);
       alert("Failed to toggle task completion. Please try again.");
